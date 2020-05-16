@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TodoDataService } from '../service/data/todo-data.service';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 
 export class Todo {
 
@@ -34,37 +34,33 @@ export class ListTodosComponent implements OnInit {
   //   description: 'Learn to Play'
   // }
 
-  constructor(
-    private todoService: TodoDataService,
-    private router: Router
-  ) { }
+  constructor(private todoDataService: TodoDataService, 
+    private router: Router,
+    private route: ActivatedRoute) { }
 
   ngOnInit() {
-    this.refreshTodods();
+    this.refreshTodo();
   }
 
-  refreshTodods(){
-    this.todoService.retrieveAllTodos('in28minutes').subscribe(
-      response => {
-        console.log(response);
-        this.todos = response;
-      }
-    )
+  refreshTodo() {
+    this.todoDataService.retrieveAllTodos('in28minutes').subscribe(todoData => {
+     this.todos = todoData;
+    })
   }
 
-  deleteTodo(id){
-    console.log(`delete todo ${id}`);
-    this.todoService.deleteTodo('in28minutes',id).subscribe(
-      response => {
-        this.message = `Delete of Todo ${id} Successful!`;
-        this.refreshTodods();
-      }
-    )
+  deleteTodo(id: number) {
+    this.todoDataService.deleteTodo('in28minutes', id).subscribe( response => {
+     this.message = `Delete of Todo id: ${id} Successful!`;
+      this.refreshTodo();
+    });
   }
 
-  updateTodo(id){
-    console.log(`update ${id}`);
-    this.router.navigate(['todos',id])
+  updateTodo(id: number) {
+    this.router.navigate([id] , {relativeTo: this.route});
+  }
+
+  addTodo() {
+    this.router.navigate([-1] , {relativeTo: this.route});
   }
 
 }
