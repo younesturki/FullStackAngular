@@ -21,7 +21,7 @@ export class WelcomeDataService {
   }
   ///hello-world/path-variable/{name}
 
-  executeHelloWorldBeanServiceWithPathVariable(name) {
+  executeHelloWorldServiceWithPath(name: string) {
     return this.http.get<HelloWorldBean>(`http://localhost:8585/hello-world/path-variable/${name}`)
     //console.log("Execute Hello World Bean Service")
   }

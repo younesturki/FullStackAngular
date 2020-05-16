@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { WelcomeDataService } from './../service/data/welcome-data.service'
+import { WelcomeDataService } from '../service/data/welcome-data.service';
 
 @Component({
   selector: 'app-welcome',
@@ -8,55 +8,37 @@ import { WelcomeDataService } from './../service/data/welcome-data.service'
   styleUrls: ['./welcome.component.css']
 })
 export class WelcomeComponent implements OnInit {
-
-  message = 'Some Welcome Message';
   welcomeMessageFromService: string;
   name = '';
+  errorMessage: string;
 
-  //ActivatedRoute
-  constructor(private route: ActivatedRoute,
-    private service: WelcomeDataService) { }
+  constructor(private route: ActivatedRoute, 
+              private welcomeDataService: WelcomeDataService) { }
 
   ngOnInit() {
-    //console.log(this.message)
-    //console.log(this.route.snapshot.params['name'])
     this.name = this.route.snapshot.params['name'];
   }
 
   getWelcomeMessage() {
-    // console.log(this.service.executeHelloWorldBeanService());
-    this.service.executeHelloWorldBeanService().subscribe(
-        response => this.handleSuccessfulRresponse(response),
-        error => this.handleErrorResponse(error)
-        
+    //console.log(this.welcomeDataService.executeHelloWorldBeanService());
+    this.welcomeDataService.executeHelloWorldBeanService()
+        .subscribe(response => this.handleSuccessfulResponse(response),
+        error => this.handleErrorResponse(error)   
     );
-    // console.log('last line of getWelcomeMessage')
-    // console.log("Get Welcome Message")
   }
 
-  handleSuccessfulRresponse(response){
+  getWelcomeMessageWithPath() {
+    this.welcomeDataService.executeHelloWorldServiceWithPath(this.name)
+     .subscribe(response => this.handleSuccessfulResponse(response),
+     error => this.handleErrorResponse(error) 
+     );
+  }
+
+  handleSuccessfulResponse(response) {
     this.welcomeMessageFromService = response.message;
-    // console.log(response);
-    // console.log(response.message)
   }
 
-  handleErrorResponse(error){
-    // console.log(error);
-    // console.log(error.error);
-    // console.log(error.error.message);
-    this.welcomeMessageFromService = error.error.message;
-  };
-
-
-  getWelcomeMessageWithParameter() {
-    // console.log(this.service.executeHelloWorldBeanService());
-    this.service.executeHelloWorldBeanServiceWithPathVariable(this.name).subscribe(
-        response => this.handleSuccessfulRresponse(response),
-        error => this.handleErrorResponse(error)
-        
-    );
-    // console.log('last line of getWelcomeMessage')
-    // console.log("Get Welcome Message")
+  handleErrorResponse(error) {
+    this.errorMessage = error.error.message;
   }
-  
 }
