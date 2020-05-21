@@ -9,6 +9,22 @@ export class BasicAuthenticationService {
 
   constructor(private http: HttpClient) { }
   
+  executeJWTAuthenticationService(username, password) {
+
+    return this.http.post<any>(`http://localhost:8585/authenticate`,{
+      username,
+      password})
+    .pipe(
+      map(
+        data => {
+          sessionStorage.setItem('authenticatedUser', username);
+          sessionStorage.setItem('token', `Bearer ${data.token}`);
+          return data;
+        }
+      )
+    );
+  }
+  
   getAuthenticatedUser() {
     return sessionStorage.getItem('authenticatedUser');
   }
